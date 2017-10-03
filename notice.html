@@ -1,419 +1,474 @@
 <html>
 
 <head>
-    <title> 오몇점 관리자 페이지 </title>
-    <style>
-        .addCard {
-            border: 1px solid #cccccc;
-            width: 700px;
-            height: 190px;
-            margin: 10px;
-            padding: 10px;
-        }
+  <title> 오몇점 관리자 페이지 </title>
+  <style>
+  .addCard {
+    border: 1px solid #cccccc;
+    width: 700px;
+    height: 190px;
+    margin: 10px;
+    padding: 10px;
+  }
 
-        .noticeCard {
-            border: 1px solid #cccccc;
-            width: 100%;
-            height: 100px;
-            margin: 10px;
-            padding: 10px;
-        }
-    </style>
+  .noticeCard {
+    border: 1px solid #cccccc;
+    width: 100%;
+    height: 100px;
+    margin: 10px;
+    padding: 10px;
+  }
 
-    <!-- dialog -->
-    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css">
-    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
-    <script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
+  </style>
 
-    <!-- firebase -->
-    <script src="https://www.gstatic.com/firebasejs/4.4.0/firebase.js"></script>
+  <!-- dialog -->
+  <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css">
+  <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+  <script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
 
-    <script>
-        // Initialize Firebase
+  <!-- firebase -->
+  <script src="https://www.gstatic.com/firebasejs/4.4.0/firebase.js"></script>
 
-
-
-
-        var config = {
-            apiKey: "AIzaSyCR17c6uLZyAi4OZ89HX_tX3UncpFhzVC8",
-            authDomain: "ohdormitory-mirim.firebaseapp.com",
-            databaseURL: "https://ohdormitory-mirim.firebaseio.com",
-            projectId: "ohdormitory-mirim",
-            storageBucket: "ohdormitory-mirim.appspot.com",
-            messagingSenderId: "16311010061"
-        };
-        firebase.initializeApp(config);
-
-        var database = firebase.database();
-
-        var isExistCleanNotice = false;
-
-
-        //파이어베이스에 추가하기
-        function addNotice() {
-            var notice_kind = document.getElementById('notice_kind').value;
-            var w_time = document.getElementById('w_time').value;
-            var d_time = document.getElementById('d_time').value;
-            var notice_title = document.getElementById('notice_title').value;
-            var content;
-            var clean_4 = new Array(7);
-            var clean_5 = new Array(7);
-
-            if (notice_kind == "공지사항") {
-                content = document.getElementById('notice_content').value;
-            } else if (notice_kind == "청소구역") {
-                if (isExistCleanNotice) {
-                    alert("청소구역이 이미 공지되어 있습니다. 삭제 후 다시 공지하세요.");
-                    return;
-                }
-                for (var i = 0; i < clean_4.length; i++) {
-                    clean_4[i] = $('#4-clean-' + i).val();
-                }
-                for (var i = 0; i < clean_5.length; i++) {
-                    clean_5[i] = $('#5-clean-' + i).val();
-                }
-            }
-            var check = checkNull(notice_kind, w_time, d_time, notice_title, content, clean_4, clean_5);//널있는지 체크
-            if (check) {
-                var noticeListRef = database.ref("notice");
-                timestamp = Math.floor(new Date().getTime() / 1000) * -1;
-                if (notice_kind == "공지사항") {
-                    var newNoticeRef = noticeListRef.child(timestamp).set({
-                        "notice_kind": notice_kind,
-                        "w_time": w_time,
-                        "d_time": d_time,
-                        "notice_title": notice_title,
-                        "content": content
-                    });
-                } else {
-                    var newNoticeRef = noticeListRef.child(timestamp).set({
-                        "notice_kind": notice_kind,
-                        "w_time": 0,
-                        "d_time": 0,
-                        "notice_title": notice_title,
-                        "clean_4": clean_4,
-                        "clean_5": clean_5
-                    });
-
-                }
-
-            }
-            return check;
-        }
-
-        // 입력한게 null인지 체크하는 함수
-        function checkNull(notice_kind, w_time, d_time, notice_title, content, clean_4, clean_5) {
-
-            if (notice_kind == "" || w_time == "" || d_time == "" || notice_title == "") {
-                alert("항목을 빠짐없이 입력해주세요");
-                return false;
-            }
-            if (notice_kind == "공지사항" && (content == null || content == "")) {
-                alert("항목을 빠짐없이 입력해주세요");
-                return false;
-            }
-            if (notice_kind == "청소구역") {
-                for (var i = 0; i < clean_4.length; i++) {
-                    if (clean_4[i] == "" || clean_4[i] == null) {
-                        alert("항목을 빠짐없이 입력해주세요");
-                        return false;
-                    } else if (clean_4[i] < 401 || clean_4[i] > 418) {
-                        alert("호수를 잘못 입력하셨습니다.");
-                        return false;
-                    }
-                }
-                for (var i = 0; i < clean_5.length; i++) {
-                    if (clean_5[i] == "" || clean_5[i] == null) {
-                        alert("항목을 빠짐없이 입력해주세요");
-                        return false;
-                    } else if (clean_5[i] < 501 || clean_5[i] > 519) {
-                        alert("호수를 잘못 입력하셨습니다.");
-                        return false;
-                    }
-                }
-
-            }
-            return true;
-        }
-
-
-        function initializeInput() {
-            document.getElementById('notice_kind').value = "";
-            document.getElementById('w_time').value = "";
-            document.getElementById('d_time').value = "";
-            document.getElementById('notice_title').value = "";
-            document.getElementById('notice_content').value = "";
-            for (var i = 0; i < 7; i++) {
-                document.getElementById('clean' + i).value = "";
-            }
-            document.getElementById("select_notice").style.display = "none";
-            document.getElementById("select_clean").style.display = "none";
-        }
-
-        var limit_num = 3;
-        function nextNotice() {
-            limit_num += 2;
-            getList(limit_num);
-        }
-
-        // 글 목록 가져오기
-        var noticeListRef;
-        function getList(limit_num) {
-            // 기존 목록을 가져온 적이 있을 때는 연결 해제
-            if (noticeListRef != null) {
-                noticeListRef.off();
-            }
-
-            noticeListRef = database.ref("notice");
-            noticeListRef.on('value', function (snapshot) {
-                isExistCleanNotice = false;
-                document.getElementById('noticeList').innerHTML = null;
-                snapshot.forEach(function (noticeSnapshot) {
-                    var notice_key = noticeSnapshot.key;
-                    var notice = noticeSnapshot.val();
-
-                    if (notice.notice_kind == "청소구역") {
-                        isExistCleanNotice = true;
-                    }
-                    if(notice.w_time == 0 && notice.d_time == 0)
-                        var date = "항시공지";
-                    else
-                        var date = notice.w_time + ' - ' + notice.d_time;
-                    var post = '<div class="noticeCard">' + date + ' [<a href="#" onClick="removeNotice(\''
-                        + notice_key
-                        + '\')">X</a>]<br><br>'
-                        + notice.notice_title + '</div>';
-                    document.getElementById('noticeList').innerHTML += post;
-                });
-            });
-
-        }
-
-        //카드 지우기 --> 파이어베이스에서도 지워짐
-        function removeNotice(key) {
-            var noticeRef = database.ref("notice/" + key);
-            noticeRef.remove();
-        }
-
-
-        getList(3);
-    </script>
-
-    <script>
-        //다이얼로그 창 띄우기
-        $(function () {
-            //$("#dialog").dialog();
-            $("#dialog").dialog({
-                autoOpen: false, //자동으로 열리지않게
-                //position:[100,200], //x,y  값을 지정
-                //"center", "left", "right", "top", "bottom"
-                modal: true, //모달대화상자
-                resizable: false, //크기 조절 못하게
-                draggable: false, //창 드래그 못하게
-                width: 700,
-                position: {
-                    my: "center",
-                    at: "center",
-                    of: "body"
-                },
-                buttons: {
-                    "제출": function () {
-                        var check = addNotice();//제출할때 파이어베이스에 넣는담
-                        if (check) {
-                            $("#dialog").dialog("close");
-                            initializeInput();
-                        }
-                    }, "취소": function () {
-                        $(this).dialog("close");
-                    }
-                }
-            });
-            //창 열기 버튼을 클릭했을경우
-            $("#btn").on("click", function () {
-                $("#dialog").dialog("open"); //다이얼로그창 오픈     
-                var today = new Date();
-            var dd = today.getDate();
-            var mm = today.getMonth() + 1; //January is 0!
-            var yyyy = today.getFullYear();
-            if (dd < 10) {
-                dd = '0' + dd
-            }
-            if (mm < 10) {
-                mm = '0' + mm
-            }
-            today = yyyy + '-' + mm + '-' + dd;
-            var parsedDate = $.datepicker.parseDate('yy-mm-dd', today);           
-                $("#w_time, #d_time").datepicker("setDate", parsedDate);
-            });
+  <script>
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyCR17c6uLZyAi4OZ89HX_tX3UncpFhzVC8",
+    authDomain: "ohdormitory-mirim.firebaseapp.com",
+    databaseURL: "https://ohdormitory-mirim.firebaseio.com",
+    projectId: "ohdormitory-mirim",
+    storageBucket: "ohdormitory-mirim.appspot.com",
+    messagingSenderId: "16311010061"
+  };
+  firebase.initializeApp(config);
+  var database = firebase.database();
+  var isExistCleanNotice = false;
+  //파이어베이스에 추가하기
+  function addNotice() {
+    var notice_kind = document.getElementById('notice_kind').value;
+    var w_time = document.getElementById('w_time').value;
+    var d_time = document.getElementById('d_time').value;
+    var notice_title = document.getElementById('notice_title').value;
+    var content;
+    var clean_4 = new Array(7);
+    var clean_5 = new Array(7);
+    if (notice_kind == "공지사항") {
+      content = document.getElementById('notice_content').value;
+    } else if (notice_kind == "청소구역") {
+      if (isExistCleanNotice) {
+        alert("청소구역이 이미 공지되어 있습니다. 삭제 후 다시 공지하세요.");
+        return;
+      }
+      for (var i = 0; i < clean_4.length; i++) {
+        clean_4[i] = $('#4-clean-' + i).val();
+      }
+      for (var i = 0; i < clean_5.length; i++) {
+        clean_5[i] = $('#5-clean-' + i).val();
+      }
+    }
+    var check = checkNull(notice_kind, w_time, d_time, notice_title, content, clean_4, clean_5); //널있는지 체크
+    if (check) {
+      var noticeListRef = database.ref("notice");
+      timestamp = Math.floor(new Date().getTime() / 1000) * -1;
+      if (notice_kind == "공지사항") {
+        var newNoticeRef = noticeListRef.child(timestamp).set({
+          "notice_kind": notice_kind,
+          "w_time": w_time,
+          "d_time": d_time,
+          "notice_title": notice_title,
+          "content": content
         });
-
-        //체크옵션에 따라 세부사항
-        function changeNoticeKind() {
-            var select_notice = document.getElementById("select_notice");
-            var select_clean = document.getElementById("select_clean");
-
-            var notice_kind = document.getElementById("notice_kind");
-
-            if (notice_kind.value == "공지사항") {
-                select_notice.style.display = "block";
-                select_clean.style.display = "none";
-                $("#notice_title").removeAttr('disabled');
-                $("#w_time, #d_time").datepicker( "option", "disabled", false );
-
-            } else if (notice_kind.value == "청소구역") {
-                select_notice.style.display = "none";
-                select_clean.style.display = "block";
-                $("#notice_title").val("청소구역");
-                $("#notice_title").attr('disabled', 'disabled');
-                $("#w_time, #d_time").datepicker( "option", "disabled", true );
-
-            } else {
-                select_notice.style.display = "none";
-                select_clean.style.display = "none";
-                $("#notice_title").removeAttr('disabled');
-                $("#w_time, #d_time").datepicker( "option", "disabled", false );
-            }
-
-
+      } else if (notice_kind == "외박일지") {
+        var newNoticeRef = noticeListRef.child(timestamp).set({
+          "notice_kind": notice_kind,
+          "w_time": w_time,
+          "d_time": d_time,
+          "notice_title": notice_title,
+          "sleep_w_time": $("#sleep_w_time").val(),
+          "sleep_d_time": $("#sleep_d_time").val()
+        });
+      } else {
+        var newNoticeRef = noticeListRef.child(timestamp).set({
+          "notice_kind": notice_kind,
+          "w_time": "0",
+          "d_time": "0",
+          "notice_title": notice_title,
+          "clean_4": clean_4,
+          "clean_5": clean_5
+        });
+      }
+    }
+    return check;
+  }
+  // 입력한게 null인지 체크하는 함수
+  function checkNull(notice_kind, w_time, d_time, notice_title, content, clean_4, clean_5, sleep_w_time, sleep_d_time) {
+    if (notice_kind == "" || w_time == "" || d_time == "" || notice_title == "") {
+      alert("항목을 빠짐없이 입력해주세요");
+      return false;
+    }
+    if (notice_kind == "공지사항" && (content == null || content == "")) {
+      alert("항목을 빠짐없이 입력해주세요");
+      return false;
+    }
+    if (notice_kind == "외박일지" && (sleep_w_time == "" || sleep_d_time == "")) {
+      alert("항목을 빠짐없이 입력해주세요");
+      return false;
+    }
+    if (notice_kind == "청소구역") {
+      for (var i = 0; i < clean_4.length; i++) {
+        if (clean_4[i] == "" || clean_4[i] == null) {
+          alert("항목을 빠짐없이 입력해주세요");
+          return false;
+        } else if (clean_4[i] < 401 || clean_4[i] > 418) {
+          alert("호수를 잘못 입력하셨습니다.");
+          return false;
         }
+      }
+      for (var i = 0; i < clean_5.length; i++) {
+        if (clean_5[i] == "" || clean_5[i] == null) {
+          alert("항목을 빠짐없이 입력해주세요");
+          return false;
+        } else if (clean_5[i] < 501 || clean_5[i] > 519) {
+          alert("호수를 잘못 입력하셨습니다.");
+          return false;
+        }
+      }
+    }
+    return true;
+  }
 
-        //날짜선택
-        // todo : 전보다 후가 더 뒤일수 있도록 날짜 범위 제한 
-        $.datepicker.setDefaults({
-            dateFormat: 'yy-mm-dd',
-            prevText: '이전 달',
-            nextText: '다음 달',
-            monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
-            monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
-            dayNames: ['일', '월', '화', '수', '목', '금', '토'],
-            dayNamesShort: ['일', '월', '화', '수', '목', '금', '토'],
-            dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],
-            showMonthAfterYear: true,
-            yearSuffix: '년'
-        });
+  function initializeInput() {
+    document.getElementById('notice_kind').value = "";
+    document.getElementById('w_time').value = "";
+    document.getElementById('d_time').value = "";
+    document.getElementById('notice_title').value = "";
+    document.getElementById('notice_content').value = "";
+    for (var i = 0; i < 7; i++) {
+      document.getElementById('clean' + i).value = "";
+    }
+    document.getElementById("select_notice").style.display = "none";
+    document.getElementById("select_clean").style.display = "none";
+  }
+  var limit_num = 3;
 
-        $(function () {
-            
-            // alert(parsedDate);
-            $("#w_time, #d_time").datepicker();
-            // $("#w_time, #d_time").datepicker("setDate", parsedDate);
+  function nextNotice() {
+    limit_num += 2;
+    getList(limit_num);
+  }
+  // 글 목록 가져오기
+  var noticeListRef;
 
-        });
-    </script>
+  function getList(limit_num) {
+    // 기존 목록을 가져온 적이 있을 때는 연결 해제
+    if (noticeListRef != null) {
+      noticeListRef.off();
+    }
+    noticeListRef = database.ref("notice");
+    noticeListRef.on('value', function(snapshot) {
+      isExistCleanNotice = false;
+      document.getElementById('noticeList').innerHTML = null;
+      snapshot.forEach(function(noticeSnapshot) {
+        var notice_key = noticeSnapshot.key;
+        var notice = noticeSnapshot.val();
+        if (notice.notice_kind == "청소구역") {
+          isExistCleanNotice = true;
+        }
+        if (notice.w_time == "0" && notice.d_time == "0")
+          var date = "항시공지";
+        else
+          var date = notice.w_time + ' - ' + notice.d_time;
+        var post = '<div class="noticeCard">' + date + ' [<a href="#" onClick="removeNotice(\'' +
+          notice_key +
+          '\')">X</a>]<br><br>' +
+          notice.notice_title + '</div>';
+        document.getElementById('noticeList').innerHTML += post;
+      });
+    });
+  }
+  //카드 지우기 --> 파이어베이스에서도 지워짐
+  function removeNotice(key) {
+    var noticeRef = database.ref("notice/" + key);
+    noticeRef.remove();
+  }
+  getList(3);
+  /*
+          // 7일마다 갱신
+          // todo 일요일을 중심으로
+          var updateRef;
+          playAlert = setInterval(function () {
+              var d = new Date();
+              if (d.getDay() == 0) {
+                  updateRef = database.ref("notice");
+                  updateRef.on('value', function (snapshot) {
+                  snapshot.forEach(function (noticeSnapshot) {
+                      var notice = noticeSnapshot.val();
+                      if (notice.notice_kind == "청소구역") {
+                          alert(notice.clean_4);
+
+                          //update
+                      //     var newNoticeRef = noticeListRef.child(timestamp).set({
+                      //     "notice_kind": notice_kind,
+                      //     "w_time": 0,
+                      //     "d_time": 0,
+                      //     "notice_title": notice_title,
+                      //     "clean_4": clean_4,
+                      //     "clean_5": clean_5
+                      // });
+
+
+                          return;
+                      }
+                  });
+              });
+              }
+          }, 60*1000);
+          //24 * 60 * x60 * 1000
+          */
+
+  </script>
+
+  <script>
+  //다이얼로그 창 띄우기
+  $(function() {
+    //$("#dialog").dialog();
+    $("#dialog").dialog({
+      autoOpen: false, //자동으로 열리지않게
+      //position:[100,200], //x,y  값을 지정
+      //"center", "left", "right", "top", "bottom"
+      modal: true, //모달대화상자
+      resizable: false, //크기 조절 못하게
+      draggable: false, //창 드래그 못하게
+      width: 700,
+      position: {
+        my: "center",
+        at: "center",
+        of: "body"
+      },
+      buttons: {
+        "제출": function() {
+          var check = addNotice(); //제출할때 파이어베이스에 넣는담
+          if (check) {
+            $("#dialog").dialog("close");
+            initializeInput();
+          }
+        },
+        "취소": function() {
+          $(this).dialog("close");
+        }
+      }
+    });
+    //창 열기 버튼을 클릭했을경우
+    $("#btn").on("click", function() {
+      $("#dialog").dialog("open"); //다이얼로그창 오픈     
+      var today = new Date();
+      var dd = today.getDate();
+      var mm = today.getMonth() + 1; //January is 0!
+      var yyyy = today.getFullYear();
+      if (dd < 10) {
+        dd = '0' + dd
+      }
+      if (mm < 10) {
+        mm = '0' + mm
+      }
+      today = yyyy + '-' + mm + '-' + dd;
+      var parsedDate = $.datepicker.parseDate('yy-mm-dd', today);
+      $("#w_time, #d_time").datepicker("setDate", parsedDate);
+    });
+  });
+  //체크옵션에 따라 세부사항
+  function changeNoticeKind() {
+    var select_notice = document.getElementById("select_notice");
+    var select_clean = document.getElementById("select_clean");
+    var select_sleep = document.getElementById("select_sleep");
+    var notice_kind = document.getElementById("notice_kind");
+    if (notice_kind.value == "공지사항") {
+      select_notice.style.display = "block";
+      select_clean.style.display = "none";
+      select_sleep.style.display = "none";
+      $("#notice_title").removeAttr('disabled');
+      $("#w_time, #d_time").datepicker("option", "disabled", false);
+    } else if (notice_kind.value == "청소구역") {
+      select_notice.style.display = "none";
+      select_clean.style.display = "block";
+      select_sleep.style.display = "none";
+      $("#notice_title").val("청소구역");
+      $("#notice_title").attr('disabled', 'disabled');
+      $("#w_time, #d_time").datepicker("option", "disabled", true);
+    } else {
+      select_notice.style.display = "none";
+      select_clean.style.display = "none";
+      select_sleep.style.display = "block";
+      $("#sleep_w_time, #sleep_d_time").datepicker();
+      $("#notice_title").val("외박일지 작성");
+      $("#notice_title").attr('disabled', 'disabled');
+      $("#w_time, #d_time").datepicker("option", "disabled", false);
+    }
+  }
+  //날짜선택
+  $.datepicker.setDefaults({
+    dateFormat: 'yy-mm-dd',
+    prevText: '이전 달',
+    nextText: '다음 달',
+    monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+    monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+    dayNames: ['일', '월', '화', '수', '목', '금', '토'],
+    dayNamesShort: ['일', '월', '화', '수', '목', '금', '토'],
+    dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],
+    showMonthAfterYear: true,
+    yearSuffix: '년'
+  });
+  $(function() {
+    // alert(parsedDate);
+    $("#w_time, #d_time").datepicker();
+    // $("#w_time, #d_time").datepicker("setDate", parsedDate);
+  });
+
+  </script>
 
 </head>
 
 <body>
-    <!-- 이거누르면 다이얼로그 뜹니당 -->
-    <input type="button" id="btn" value="작성하기" />
+  <!-- 이거누르면 다이얼로그 뜹니당 -->
+  <input type="button" id="btn" value="작성하기" />
 
-    <!-- 다이얼로그 -->
-    <div class="addCard" id="dialog" title="공지사항 작성">
-        <form>게시종류 &nbsp;&nbsp;
-            <select name="게시종류" id="notice_kind" onclick="changeNoticeKind(); return false;">
-                    <option value=""></option>
-                        <option value="공지사항">공지사항</option>
-                        <option value="청소구역" >청소구역</option>
-                        <option value="외박일지">외박일지</option>
-                </select><br><br> 게시기간 &nbsp;&nbsp;
-            <input type="text" id="w_time"> -
-            <input type="text" id="d_time">
-            <br><br> 게시제목 &nbsp;&nbsp;
-            <input type="text" id="notice_title">
-            <br><br>
-            <!-- 여기 위까지가 공통 -->
-            <!-- 이거는 공지사항 세부사항 -->
-            <div id="select_notice" style="display:none">
-                공지내용 &nbsp;&nbsp;<textarea type="text" id="notice_content" style="width:300px;height:40px;"></textarea><br><br>
-            </div>
-            <!-- 이거는 세탁 세부사항 -->
-            <div id="select_clean" style="display:none">
-                청소구역 &nbsp;&nbsp;
-                <table border="1px">
-                    <tr>
-                        <td>세면실</td>
-                        <td>세탁실/탈의실</td>
-                        <td>샤워실</td>
-                        <td>복도</td>
-                        <td>휴게실</td>
-                        <td>계단</td>
-                        <td>화장실</td>
-                    </tr>
-                    <tr>
-                        <td><input type="text" style="width: 60px" id="4-clean-0"></td>
-                        <td><input type="text" style="width: 80px" id="4-clean-1"></td>
-                        <td><input type="text" style="width: 60px" id="4-clean-2"></td>
-                        <td><input type="text" style="width: 60px" id="4-clean-3"></td>
-                        <td><input type="text" style="width: 60px" id="4-clean-4"></td>
-                        <td><input type="text" style="width: 60px" id="4-clean-5"></td>
-                        <td><input type="text" style="width: 60px" id="4-clean-6"></td>
-                    </tr>
-                    <tr>
-                        <td><input type="text" style="width: 60px" id="5-clean-0"></td>
-                        <td><input type="text" style="width: 80px" id="5-clean-1"></td>
-                        <td><input type="text" style="width: 60px" id="5-clean-2"></td>
-                        <td><input type="text" style="width: 60px" id="5-clean-3"></td>
-                        <td><input type="text" style="width: 60px" id="5-clean-4"></td>
-                        <td><input type="text" style="width: 60px" id="5-clean-5"></td>
-                        <td><input type="text" style="width: 60px" id="5-clean-6"></td>
-                    </tr>
-                </table>
+  <!-- 다이얼로그 -->
+  <div class="addCard" id="dialog" title="공지사항 작성">
+    <form>게시종류 &nbsp;&nbsp;
+      <select name="게시종류" id="notice_kind" onclick="changeNoticeKind(); return false;">
+        <option value=""></option>
+        <option value="공지사항">공지사항</option>
+        <option value="청소구역">청소구역</option>
+        <option value="외박일지">외박일지</option>
+      </select>
+      <br>
+      <br> 게시기간 &nbsp;&nbsp;
+      <input type="text" id="w_time"> -
+      <input type="text" id="d_time">
+      <br>
+      <br> 게시제목 &nbsp;&nbsp;
+      <input type="text" id="notice_title">
+      <br>
+      <br>
+      <!-- 여기 위까지가 공통 -->
+      <!-- 이거는 공지사항 세부사항 -->
+      <div id="select_notice" style="display:none">
+        공지내용 &nbsp;&nbsp;
+        <textarea type="text" id="notice_content" style="width:300px;height:40px;"></textarea>
+        <br>
+        <br>
+      </div>
+      <!-- 이거는 세탁 세부사항 -->
+      <div id="select_clean" style="display:none">
+        청소구역 &nbsp;&nbsp;
+        <table border="1px">
+          <tr>
+            <td>세면실</td>
+            <td>세탁실/탈의실</td>
+            <td>샤워실</td>
+            <td>복도</td>
+            <td>휴게실</td>
+            <td>계단</td>
+            <td>화장실</td>
+          </tr>
+          <tr>
+            <td>
+              <input type="text" style="width: 60px" id="4-clean-0">
+            </td>
+            <td>
+              <input type="text" style="width: 80px" id="4-clean-1">
+            </td>
+            <td>
+              <input type="text" style="width: 60px" id="4-clean-2">
+            </td>
+            <td>
+              <input type="text" style="width: 60px" id="4-clean-3">
+            </td>
+            <td>
+              <input type="text" style="width: 60px" id="4-clean-4">
+            </td>
+            <td>
+              <input type="text" style="width: 60px" id="4-clean-5">
+            </td>
+            <td>
+              <input type="text" style="width: 60px" id="4-clean-6">
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <input type="text" style="width: 60px" id="5-clean-0">
+            </td>
+            <td>
+              <input type="text" style="width: 80px" id="5-clean-1">
+            </td>
+            <td>
+              <input type="text" style="width: 60px" id="5-clean-2">
+            </td>
+            <td>
+              <input type="text" style="width: 60px" id="5-clean-3">
+            </td>
+            <td>
+              <input type="text" style="width: 60px" id="5-clean-4">
+            </td>
+            <td>
+              <input type="text" style="width: 60px" id="5-clean-5">
+            </td>
+            <td>
+              <input type="text" style="width: 60px" id="5-clean-6">
+            </td>
+          </tr>
+        </table>
 
-                <span id="guideMessage"></span>
-            </div>
-            <!-- 외박일정은 세부사항 없어용 -->
-        </form>
-    </div>
-    <!-- 공지사항 목록 -->
-    <div id="noticeList"> </div>
-    <div style="border:1px solid #999;">
-        <input type="button" value="다음 글 2개 더 가져오기" onClick="nextNotice()" style="width:100%;height:40px;">
-    </div>
-    <script type="text/javascript">
-        for (var i = 1; i < 7; i++) {
-            $("#4-clean-" + i).attr('disabled', 'disabled');
-            $("#5-clean-" + i).attr('disabled', 'disabled');
-        }
+        <span id="guideMessage"></span>
+      </div>
+      <div id="select_sleep" style="display:none">
+        <input type="text" id="sleep_w_time"> -
+        <input type="text" id="sleep_d_time">
+      </div>
+    </form>
+  </div>
+  <!-- 공지사항 목록 -->
+  <div id="noticeList"> </div>
+  <div style="border:1px solid #999;">
+    <input type="button" value="다음 글 2개 더 가져오기" onClick="nextNotice()" style="width:100%;height:40px;">
+  </div>
+  <script type="text/javascript">
+  for (var i = 1; i < 7; i++) {
+    $("#4-clean-" + i).attr('disabled', 'disabled');
+    $("#5-clean-" + i).attr('disabled', 'disabled');
+  }
+  $("#guideMessage").html("첫 번째 구역을 설정하시면 자동으로 계산됩니다.");
+  $("#4-clean-0").change(function() {
+    if ($("#4-clean-0").val() < 401 || $("#4-clean-0").val() > 418) {
+      alert("호수를 잘못 입력하셨습니다.");
+      return;
+    }
+    $("#guideMessage").html("");
+    var number = parseInt($("#4-clean-0").val());
+    for (var i = 1; i < 7; i++) {
+      number++;
+      if (number > 418)
+        number = 401;
+      $("#4-clean-" + i).removeAttr('disabled');
+      $("#4-clean-" + i).val(number);
+    }
+  });
+  $("#5-clean-0").change(function() {
+    if ($("#5-clean-0").val() < 501 || $("#5-clean-0").val() > 519) {
+      alert("호수를 잘못 입력하셨습니다.");
+      return;
+    }
+    $("#guideMessage").html("");
+    var number = parseInt($("#5-clean-0").val());
+    for (var i = 1; i < 7; i++) {
+      number++;
+      if (number > 519)
+        number = 501;
+      $("#5-clean-" + i).removeAttr('disabled');
+      $("#5-clean-" + i).val(number);
+    }
+  });
 
-        $("#guideMessage").html("첫 번째 구역을 설정하시면 자동으로 계산됩니다.");
-        $("#4-clean-0").change(function () {
-            if ($("#4-clean-0").val() < 401 || $("#4-clean-0").val() > 418) {
-                alert("호수를 잘못 입력하셨습니다.");
-                return;
-            }
-
-            $("#guideMessage").html("");
-
-            var number = parseInt($("#4-clean-0").val());
-            for (var i = 1; i < 7; i++) {
-                number++;
-                if (number > 418)
-                    number = 401;
-                $("#4-clean-" + i).removeAttr('disabled');
-                $("#4-clean-" + i).val(number);
-            }
-
-        });
-        $("#5-clean-0").change(function () {
-            if ($("#5-clean-0").val() < 501 || $("#5-clean-0").val() > 519) {
-                alert("호수를 잘못 입력하셨습니다.");
-                return;
-            }
-
-            $("#guideMessage").html("");
-
-            var number = parseInt($("#5-clean-0").val());
-            for (var i = 1; i < 7; i++) {
-                number++;
-                if (number > 519)
-                    number = 501;
-                $("#5-clean-" + i).removeAttr('disabled');
-                $("#5-clean-" + i).val(number);
-
-            }
-
-        });
-    </script>
+  </script>
 </body>
 
 </html>
+

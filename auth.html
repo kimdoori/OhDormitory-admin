@@ -1,0 +1,158 @@
+<html>
+
+<head>
+  <title>auth </title>
+  <style>
+  .user {
+    width: 100%;
+    height: auto;
+    border: 1px solid #000000;
+  }
+
+  .user-value {
+    font-size: 15pt;
+    height: auto;
+    margin: 10px;
+    color: #5e5e5e;
+  }
+
+  .user-index {
+    color: black;
+    font-weight: bold;
+  }
+
+  .user-uid {
+    color: #acacac;
+    font-style: italic;
+  }
+
+  </style>
+  <script src="https://www.gstatic.com/firebasejs/4.4.0/firebase.js"></script>
+  <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script type="text/javascript">
+  var roomNumbers = [
+    "401", "402", "403", "404", "405", "406", "407", "408", "409", "410", "411", "412", "413", "414", "415", "416", "417", "418", "501", "502", "503", "504", "505", "506", "507", "508", "509", "510", "511", "512", "513", "514", "515", "516", "517", "518", "519"
+  ];
+  alert(roomNumbers.length);
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyCR17c6uLZyAi4OZ89HX_tX3UncpFhzVC8",
+    authDomain: "ohdormitory-mirim.firebaseapp.com",
+    databaseURL: "https://ohdormitory-mirim.firebaseio.com",
+    projectId: "ohdormitory-mirim",
+    storageBucket: "ohdormitory-mirim.appspot.com",
+    messagingSenderId: "16311010061"
+  };
+  firebase.initializeApp(config);
+  //Get a reference to the database service
+  var database = firebase.database();
+  var userListRef;
+  function getUserList() {
+    // 기존 목록을 가져온 적이 있을 때는 연결 해제
+    if (userListRef != null) {
+      userListRef.off();
+    }
+    userListRef = database.ref("user");
+    userListRef.on('value', function(snapshot) {
+      document.getElementById('userlist').innerHTML = null;
+      var index = 0;
+      snapshot.forEach(function(userSnapshot) {
+        index++;
+        var key = userSnapshot.key;
+        var name = userSnapshot.val().name;
+        var roomNumber = userSnapshot.val().roomNumber;
+        var uid = userSnapshot.val().uid;
+        var allowCode = userSnapshot.val().allowCode;
+        if (allowCode == 0) {
+          var button2 = "<input type='button' value='거절' onClick='deleteAllow(" + userSnapshot.val() + ")'>";
+          var post = "<div class='user'><h1>" + name + "</h1><h2>" + roomNumber + "</h2><h3>" + allowCode + "</h3><input type='button' value='승인' id='btn')'></div>";
+          document.getElementById('userlist').innerHTML += post;
+        }
+      });
+    });
+  }
+
+  function allow(index) {
+    // alert($("#account").html()+$("#roomNumber").html());
+    var key = $("#account-" + index).html();
+    var name = $("#name-" + index).html();
+    var roomNumber = $("#roomNumber-" + index).html();
+    var uid = $("#uid-" + index).html();
+    var userData = {
+      "allowCode": 1,
+      "name": name,
+      "roomNumber": roomNumbers.indexOf(roomNumber),
+      "uid": uid
+    };
+    var updates = {};
+    updates['/user/' + key] = userData;
+    return firebase.database().ref().update(updates);
+  }
+
+  function reject(index) {
+    var index = -1 * parseInt(index);
+    var key = $("#account-" + index).html();
+    var name = $("#name-" + index).html();
+    var roomNumber = $("#roomNumber-" + index).html();
+    var uid = $("#uid-" + index).html();
+    var userData = {
+      "allowCode": -2,
+      "name": name,
+      "roomNumber": roomNumbers.indexOf(roomNumber),
+      "uid": uid
+    };
+    var updates = {};
+    updates['/user/' + key] = userData;
+    return firebase.database().ref().update(updates);
+  }
+
+  </script>
+</head>
+
+<body>
+
+  <div id="userlist">
+  </div>
+
+  <script type="text/javascript">
+  // allow button = (plus) index
+  // reject button = (minus) index
+  
+
+  function getUserList() {
+    // 기존 목록을 가져온 적이 있을 때는 연결 해제
+    if (userListRef != null) {
+      userListRef.off();
+    }
+    userListRef = database.ref("user");
+    userListRef.on('value', function(snapshot) {
+      document.getElementById('userlist').innerHTML = null;
+      var index = 0;
+      snapshot.forEach(function(userSnapshot) {
+        var allowCode = userSnapshot.val().allowCode;
+        if (allowCode == 0) {
+          index++;
+          var key = userSnapshot.key;
+          var name = userSnapshot.val().name;
+          var roomNumber = userSnapshot.val().roomNumber;
+          var uid = userSnapshot.val().uid;
+          var post = "<div class='user'><span id='index-" + index + "' class='user-value user-index'>" + index + "</span>" +
+            "<span id='account-" + index + "' class='user-value'>" + key + "</span>" +
+            "<span id='name-" + index + "' class='user-value'>" + name + "</span>" +
+            "<span id='roomNumber-" + index + "' class='user-value'>" + roomNumbers[roomNumber] + "</span>" +
+            "<span id='uid-" + index + "' class='user-value user-uid'>" + uid + "</span>" +
+            "<input type='button' value='승인' id='" + index + "' onclick='allow(this.id)'>" +
+            "<input type='button' value='거절' id='-" + index + "' onclick='reject(this.id)'>" +
+            "</div>";
+          document.getElementById('userlist').innerHTML += post;
+        }
+      });
+    });
+  }
+  getUserList();
+
+  </script>
+</body>
+
+</html>
+

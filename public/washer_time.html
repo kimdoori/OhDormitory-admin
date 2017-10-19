@@ -1,0 +1,171 @@
+<html>
+
+<head>
+    <title>washer-time</title>
+    <!-- css -->
+    <style>
+        .washer-table {
+            width: 80%;
+            height: auto;
+            border: 1px solid #353535;
+            border-spacing: 0px 0px;
+            text-align: center;
+        }
+
+        tr,
+        td {
+            border: 1px solid #353535;
+        }
+    </style>
+    <!-- jquery -->
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css">
+    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
+    <!--  firebase -->
+    <script src="https://www.gstatic.com/firebasejs/4.5.0/firebase.js"></script>
+    <script>
+        // Initialize Firebase
+        var config = {
+            apiKey: "AIzaSyCR17c6uLZyAi4OZ89HX_tX3UncpFhzVC8",
+            authDomain: "ohdormitory-mirim.firebaseapp.com",
+            databaseURL: "https://ohdormitory-mirim.firebaseio.com",
+            projectId: "ohdormitory-mirim",
+            storageBucket: "ohdormitory-mirim.appspot.com",
+            messagingSenderId: "16311010061"
+        };
+        firebase.initializeApp(config);
+        var database = firebase.database();
+    </script>
+    <script>
+        // Get the current date at midnight.
+        var now = new Date();
+        var year = now.getFullYear();
+        var month;
+        var date;
+
+        if (now.getMonth() + 1 < 10)
+            month = "0" + now.getMonth() + 1;
+        else month = now.getMonth() + 1;
+
+        if (now.getDate() < 10)
+            date = "0" + now.getDate();
+        else date = now.getDate();
+
+        var today = year + "-" + month + "-" + date;
+
+        var firstStartTime = new Date(year, month - 1, date, 6, 0, 0, 0);
+        var firstEndTime = new Date(year, month - 1, date, 9, 0, 0, 0);
+        var secondEndTime = new Date(year, month - 1, date, 12, 0, 0, 0);
+        var thirdStartTime = new Date(year, month - 1, date, 20, 0, 0, 0);
+        var thirdEndTime = new Date(year, month - 1, date, 23, 30, 0, 0);
+    </script>
+</head>
+
+<body>
+    <div id="wash">
+        <table class="washer-table">
+            <tr>
+                <td>
+                </td>
+                <td id="first-time">
+                </td>
+                <td id="second-time">
+                </td>
+                <td id="third-time">
+                </td>
+
+            </tr>
+            <tr>
+                <td>
+                    1번
+                </td>
+                <td id="4-0-0">
+                    400
+                </td>
+                <td id="4-0-1">
+                    401
+                </td>
+                <td id="4-0-2">
+                    402
+                </td>
+
+            </tr>
+            <tr>
+                <td>
+                    2번
+                </td>
+                <td id="4-1-0">
+                    410
+                </td>
+                <td id="4-1-1">
+                    411
+                </td>
+                <td id="4-1-2">
+                    412
+                </td>
+
+            </tr>
+            <tr>
+                <td>
+                    3번
+                </td>
+                <td id="4-2-0">
+                    420
+                </td>
+                <td id="4-2-1">
+                    421
+                </td>
+                <td id="4-2-2">
+                    422
+                </td>
+
+            </tr>
+        </table>
+    </div>
+    <script>
+        var timeType;
+        var isPossibleTime = true;
+        if (now > firstStartTime && now <= firstEndTime) {
+            timeType = 0;
+            $("#first-time").html("06:00~07:00");
+            $("#second-time").html("07:00~08:00");
+            $("#third-time").html("08:00~09:00");
+        } else if (now > firstEndTime && now <= secondEndTime) {
+
+            alert("type_1");
+            timeType = 1;
+            $("#first-time").html("09:00~10:00");
+            $("#second-time").html("10:00~11:00");
+            $("#third-time").html("11:00~12:00");
+        } else if (now > thirdStartTime && now <= thirdEndTime) {
+            timeType = 2;
+            isPossibleTime = false;
+            $("#first-time").html("20:00~21:00");
+            $("#second-time").html("21:00~22:00");
+            $("#third-time").html("22:00~23:30");
+        }
+
+        var floor4Ref;
+        function getScoreList() {
+            if (floor4Ref != null) {
+                floor4Ref.off();
+            }
+            // wash-time / today / floor / type / washer / 0
+            floor4Ref = database.ref("wash-time/" + today + "/floor_4/type_" + timeType);
+            floor4Ref.on('value', function (snapshot) {
+                snapshot.forEach(function (timeTypeSnapshot) {
+                    alert(timeTypeSnapshot.key(0));
+                    
+                    // washerRef = timeTypeSnapshot.child("washer_0").val();
+                    alert("gd");
+                    // alert(washerRef[0].name);
+
+                });
+            });
+        }
+    getScoreList();
+    </script>
+</body>
+
+</html>

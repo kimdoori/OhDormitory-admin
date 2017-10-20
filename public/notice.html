@@ -328,6 +328,7 @@
         select_notice.style.display = "block";
         select_clean.style.display = "none";
         select_sleep.style.display = "none";
+        $("#notice_title").val("");
         $("#notice_title").removeAttr('disabled');
         $("#w_time, #d_time").datepicker("option", "disabled", false);
       } else if (notice_kind.value == "청소구역") {

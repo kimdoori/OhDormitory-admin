@@ -60,32 +60,33 @@
         var secondEndTime = new Date(year, month - 1, date, 12, 0, 0, 0);
         var thirdStartTime = new Date(year, month - 1, date, 20, 0, 0, 0);
         var thirdEndTime = new Date(year, month - 1, date, 23, 30, 0, 0);
-        // 
+        //
     </script>
 </head>
 
 <body>
-    <div id="wash">
+    <div id="wash-4">
         <table class="washer-table">
             <tr>
                 <td>
                 </td>
-                <td id="first-time">
+                <td id="first-time-4">
                 </td>
-                <td id="second-time">
+                <td id="second-time-4">
                 </td>
-                <td id="third-time">
+                <td id="third-time-4">
                 </td>
 
             </tr>
-            
+
             <tr>
                 <td>
                     1번
                 </td>
-                 <!-- id : 층 - 세탁기 번호 - 시간 -->
+                <!-- id : 층 - 세탁기 번호 - 시간 -->
                 <td id="4-0-0">
                     <!-- 400 -->
+
                 </td>
                 <td id="4-0-1">
                     <!-- 401 -->
@@ -127,48 +128,186 @@
             </tr>
         </table>
     </div>
+    <div id="wash-5">
+        <table class="washer-table">
+            <tr>
+                <td>
+                </td>
+                <td id="first-time-5">
+                </td>
+                <td id="second-time-5">
+                </td>
+                <td id="third-time-5">
+                </td>
+
+            </tr>
+
+            <tr>
+                <td>
+                    1번
+                </td>
+                <!-- id : 층 - 세탁기 번호 - 시간 -->
+                <td id="5-0-0">
+                    <!-- 400 -->
+                </td>
+                <td id="5-0-1">
+                    <!-- 401 -->
+                </td>
+                <td id="5-0-2">
+                    <!-- 402 -->
+                </td>
+
+            </tr>
+            <tr>
+                <td>
+                    2번
+                </td>
+                <td id="5-1-0">
+                    <!-- 410 -->
+                </td>
+                <td id="5-1-1">
+                    <!-- 411 -->
+                </td>
+                <td id="5-1-2">
+                    <!-- 412 -->
+                </td>
+
+            </tr>
+            <tr>
+                <td>
+                    3번
+                </td>
+                <td id="5-2-0">
+                    <!-- 420 -->
+                </td>
+                <td id="5-2-1">
+                    <!-- 421 -->
+                </td>
+                <td id="5-2-2">
+                    <!-- 422 -->
+                </td>
+
+            </tr>
+        </table>
+    </div>
     <script>
         var timeType; // 오전1, 오전 2, 오후 시간 타입
         var isPossibleTime = true;
         if (now > firstStartTime && now <= firstEndTime) {
             timeType = 0;
-            $("#first-time").html("06:00~07:00");
-            $("#second-time").html("07:00~08:00");
-            $("#third-time").html("08:00~09:00");
+            $("#first-time-4").html("06:00~07:00");
+            $("#second-time-4").html("07:00~08:00");
+            $("#third-time-4").html("08:00~09:00");
+            $("#first-time-5").html("06:00~07:00");
+            $("#second-time-5").html("07:00~08:00");
+            $("#third-time-5").html("08:00~09:00");
         } else if (now > firstEndTime && now <= secondEndTime) {
             timeType = 1;
-            $("#first-time").html("09:00~10:00");
-            $("#second-time").html("10:00~11:00");
-            $("#third-time").html("11:00~12:00");
+            $("#first-time-4").html("09:00~10:00");
+            $("#second-time-4").html("10:00~11:00");
+            $("#third-time-4").html("11:00~12:00");
+            $("#first-time-5").html("09:00~10:00");
+            $("#second-time-5").html("10:00~11:00");
+            $("#third-time-5").html("11:00~12:00");
         } else if (now > thirdStartTime && now <= thirdEndTime) {
             timeType = 2;
             isPossibleTime = false;
-            $("#first-time").html("20:00~21:00");
-            $("#second-time").html("21:00~22:00");
-            $("#third-time").html("22:00~23:30");
+            $("#first-time-4").html("20:00~21:00");
+            $("#second-time-4").html("21:00~22:00");
+            $("#third-time-4").html("22:00~23:30");
+            $("#first-time-5").html("20:00~21:00");
+            $("#second-time-5").html("21:00~22:00");
+            $("#third-time-5").html("22:00~23:30");
+        }
+        else {
+            timeType = -1;
+            isPossibleTime = false;
+            $("#first-time-4").html("20:00~21:00");
+            $("#second-time-4").html("21:00~22:00");
+            $("#third-time-4").html("22:00~23:30");
+            $("#first-time-5").html("20:00~21:00");
+            $("#second-time-5").html("21:00~22:00");
+            $("#third-time-5").html("22:00~23:30");
+
         }
 
+
         var floor4Ref;
+
+        var washingRef;
+        var floorRef;
+        var typeRef;
+        var washerRef;
+        var timeRef;
+
+
         function getWashList() {
             if (floor4Ref != null) {
                 floor4Ref.off();
             }
+
             // database 구조
             // wash-time / 날짜 / 4층 or 5층 / 오전1, 오전2, 오후 / 세탁기 번호 / 시간 타입
             // wash-time / today / floor / type / washer / 0
-            floor4Ref = database.ref("wash-time/" + today + "/floor_4/type_" + timeType);
-            floor4Ref.on('value', function (snapshot) {
-                snapshot.forEach(function (timeTypeSnapshot) {
-                    alert(timeTypeSnapshot.key(0));
-                    
-                    // washerRef = timeTypeSnapshot.child("washer_0").val();
-                    alert("gd");
-                    // alert(washerRef[0].name);
+
+            washingRef = database.ref("wash-time/" + today);//테스트용 : "wash-time/" + "2017-10-19"
+            washingRef.on('value', function (snapshot) {
+                snapshot.forEach(function (washingSnapshot) {
+                    var floorKey = washingSnapshot.key;//floor_5
+                    alert(floorKey);
+                    floorRef = database.ref("wash-time/" + today + "/" + floorKey);//테스트용 : "wash-time/2017-10-19/" + floorKey
+                    floorRef.on('value', function (floorSnapshot) {
+                        floorSnapshot.forEach(function (typeSnapshot) {//timeType
+                            var typeKey = typeSnapshot.key;//type_2
+                            if (typeKey == "type_" + timeType) {//테스트용 : 이 라인 주석으로
+
+                                typeRef = database.ref("wash-time/" + today + "/" + floorKey + "/" + typeKey); //테스트용 : "wash-time/2017-10-19/" + floorKey+"/"+typeKey
+                                typeRef.on('value', function (washerSnapshot) {
+                                    washerSnapshot.forEach(function (washSnapshot) {//washer type
+                                        var washerKey = washSnapshot.key;//washer_0
+                                        alert(washerKey);
+
+                                        washerRef = database.ref("wash-time/" + today + "/" + floorKey + "/" + typeKey + "/" + washerKey);//테스트용 : wash-time/2017-10-19/" + floorKey+"/"+typeKey+"/"+washerKey
+                                        washerRef.on('value', function (timeTypeSnapshot) {
+                                            timeTypeSnapshot.forEach(function (timeSnapshot) {
+                                                var timeKey = timeSnapshot.key;//1
+                                                alert(timeKey);
+
+                                                var washerUserData = timeSnapshot.val();
+                                                var user = washerUserData.name;
+                                                if (user == null)//개인이 아니라 방일 경우
+                                                    user = washerUserData.roomNumber;
+
+                                                var floor = floorKey.replace("floor_", "");
+                                                var waherNum = washerKey.replace("washer_", "");
+                                                $("#" + floor + "-" + waherNum + "-" + timeKey).html(user); //    층 - 세탁기 번호 - 시간
+
+                                                alert(user);
+
+
+
+                                            });
+
+                                        });
+
+                                    });
+
+                                });
+
+                            }//테스트용 : 이 라인 주석으로
+
+                        });
+                    });
+
 
                 });
+
             });
         }
-        getWashList();
+
+        if (isPossibleTime == true) {//테스트용 : 이 라인 주석으로
+            getWashList();
+        }//테스트용 : 이 라인 주석으로
     </script>
 </body>
 

@@ -79,13 +79,24 @@
             //파이어베이스에 추가하기
     
             function sendQRcode(param) {
-                var sleep_outListRef = database.ref("sleep-out/" + param);
-                var newNoticeRef = sleep_outListRef.update({
-                    "send": "true"
+                var sleepRef = database.ref("sleep-out");
+                sleepRef.on('value', function (snapshot) {
+                    snapshot.forEach(function (sleepSnapshot) {
+                        var sendKey = sleepSnapshot.key;
+
+                        var sleep_outListRef = database.ref("sleep-out/" + sendKey);
+                        var newNoticeRef = sleep_outListRef.update({
+                            "send": "true"
+                        });
+                        checkSleepOutStudent();
+
+                    });
                 });
-                checkSleepOutStudent();
-                alert("QR코드를 전송했습니다");
+
+                 
+                    
             }
+                
     
      
             // 글 목록 가져오기
@@ -199,20 +210,19 @@
             }
     
             getList();
-        </script>
-    
-        <script>
+
             $(function () {
     
                 $("#sendQR").on("click", function () {
-                    sendQRcode(sleep_out_date);
+                    sendQRcode();
+                    alert("QR코드를 전송했습니다");
+
                 });
     
     
             });
         </script>
-    
-    
+
     
     </head>
     

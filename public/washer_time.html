@@ -39,6 +39,7 @@
     </script>
     <script>
         // Get the current date at midnight.
+        // [시간 계산]
         var now = new Date();
         var year = now.getFullYear();
         var month;
@@ -59,6 +60,7 @@
         var secondEndTime = new Date(year, month - 1, date, 12, 0, 0, 0);
         var thirdStartTime = new Date(year, month - 1, date, 20, 0, 0, 0);
         var thirdEndTime = new Date(year, month - 1, date, 23, 30, 0, 0);
+        // 
     </script>
 </head>
 
@@ -76,18 +78,20 @@
                 </td>
 
             </tr>
+            
             <tr>
                 <td>
                     1번
                 </td>
+                 <!-- id : 층 - 세탁기 번호 - 시간 -->
                 <td id="4-0-0">
-                    400
+                    <!-- 400 -->
                 </td>
                 <td id="4-0-1">
-                    401
+                    <!-- 401 -->
                 </td>
                 <td id="4-0-2">
-                    402
+                    <!-- 402 -->
                 </td>
 
             </tr>
@@ -96,13 +100,13 @@
                     2번
                 </td>
                 <td id="4-1-0">
-                    410
+                    <!-- 410 -->
                 </td>
                 <td id="4-1-1">
-                    411
+                    <!-- 411 -->
                 </td>
                 <td id="4-1-2">
-                    412
+                    <!-- 412 -->
                 </td>
 
             </tr>
@@ -111,20 +115,20 @@
                     3번
                 </td>
                 <td id="4-2-0">
-                    420
+                    <!-- 420 -->
                 </td>
                 <td id="4-2-1">
-                    421
+                    <!-- 421 -->
                 </td>
                 <td id="4-2-2">
-                    422
+                    <!-- 422 -->
                 </td>
 
             </tr>
         </table>
     </div>
     <script>
-        var timeType;
+        var timeType; // 오전1, 오전 2, 오후 시간 타입
         var isPossibleTime = true;
         if (now > firstStartTime && now <= firstEndTime) {
             timeType = 0;
@@ -132,8 +136,6 @@
             $("#second-time").html("07:00~08:00");
             $("#third-time").html("08:00~09:00");
         } else if (now > firstEndTime && now <= secondEndTime) {
-
-            alert("type_1");
             timeType = 1;
             $("#first-time").html("09:00~10:00");
             $("#second-time").html("10:00~11:00");
@@ -147,10 +149,12 @@
         }
 
         var floor4Ref;
-        function getScoreList() {
+        function getWashList() {
             if (floor4Ref != null) {
                 floor4Ref.off();
             }
+            // database 구조
+            // wash-time / 날짜 / 4층 or 5층 / 오전1, 오전2, 오후 / 세탁기 번호 / 시간 타입
             // wash-time / today / floor / type / washer / 0
             floor4Ref = database.ref("wash-time/" + today + "/floor_4/type_" + timeType);
             floor4Ref.on('value', function (snapshot) {
@@ -164,7 +168,7 @@
                 });
             });
         }
-    getScoreList();
+        getWashList();
     </script>
 </body>
 

@@ -106,7 +106,7 @@
           clean_5[i] = $('#5-clean-' + i).val();
         }
       }
-      var check = checkNull(notice_kind, w_time, d_time, notice_title, content, clean_4, clean_5); //널있는지 체크
+      var check = checkNull(notice_kind, w_time, d_time, notice_title, content, clean_4, clean_5, $("#sleep_w_time").val(),  $("#sleep_d_time").val()); //널있는지 체크
       if (check) {
         var noticeListRef = database.ref("notice");
         timestamp = Math.floor(new Date().getTime() / 1000) * -1;
@@ -144,6 +144,18 @@
     }
     // 입력한게 null인지 체크하는 함수
     function checkNull(notice_kind, w_time, d_time, notice_title, content, clean_4, clean_5, sleep_w_time, sleep_d_time) {
+      var w_time_object = new Date(w_time);
+      var d_time_object = new Date(d_time);
+
+      var now_time = new Date();
+      alert(w_time_object.getTime() > d_time_object.getTime());
+      var dateCompare = (w_time_object.getFullYear() < now_time.getFullYear()||w_time_object.getMonth() < now_time.getMonth() || w_time_object.getDate()<now_time.getDate());
+      alert(dateCompare);
+      if((w_time_object.getTime() > d_time_object.getTime()) || dateCompare){
+        alert("게시 날짜가 잘못되었습니다."); 
+        return false;
+      }
+
       if (notice_kind == "" || w_time == "" || d_time == "" || notice_title == "") {
         alert("항목을 빠짐없이 입력해주세요");
         return false;
@@ -156,6 +168,19 @@
         alert("항목을 빠짐없이 입력해주세요");
         return false;
       }
+
+      var sleep_w_time_object = new Date(sleep_w_time);
+      var sleep_d_time_object = new Date(sleep_d_time);
+
+
+      var sleepDateCompare = (sleep_w_time_object.getFullYear() < now_time.getFullYear()||sleep_w_time_object.getMonth() < now_time.getMonth() || sleep_w_time_object.getDate()<now_time.getDate());
+      
+      if(notice_kind == "외박일지" && ((sleep_w_time_object.getTime() > sleep_d_time_object.getTime())||sleepDateCompare)){
+        alert("외박 날짜가 잘못되었습니다."); 
+        return false;
+      }
+
+
       if (notice_kind == "청소구역") {
         for (var i = 0; i < clean_4.length; i++) {
           if (clean_4[i] == "" || clean_4[i] == null) {

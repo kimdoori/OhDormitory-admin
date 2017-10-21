@@ -84,7 +84,7 @@
       }
     }
     .navbar-nav > .nav-item.dropdown > .nav-link:after {
-      color: fade-out($black, 0.5);
+      color: fade-out(#ffc119, 0.5);
     }
   }
   @media (min-width: 992px) {

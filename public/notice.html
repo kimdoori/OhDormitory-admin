@@ -250,9 +250,7 @@
       var d_time_object = new Date(d_time);
 
       var now_time = new Date();
-      alert(w_time_object.getTime() > d_time_object.getTime());
       var dateCompare = (w_time_object.getFullYear() < now_time.getFullYear()||w_time_object.getMonth() < now_time.getMonth() || w_time_object.getDate()<now_time.getDate());
-      alert(dateCompare);
       if((w_time_object.getTime() > d_time_object.getTime()) || dateCompare){
         alert("게시 날짜가 잘못되었습니다."); 
         return false;

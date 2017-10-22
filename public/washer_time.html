@@ -190,6 +190,7 @@
             </tr>
         </table>
     </div>
+    <div id="guideMessage"></div>
     <script>
         var timeType; // 오전1, 오전 2, 오후 시간 타입
         var isPossibleTime = true;
@@ -305,9 +306,15 @@
             });
         }
 
-        if (isPossibleTime == true) {//테스트용 : 이 라인 주석으로
+        if (isPossibleTime) {//테스트용 : 이 라인 주석으로
             getWashList();
+            $("#guideMessage").text("");
         }//테스트용 : 이 라인 주석으로
+        else{
+            $("#wash-4").text("");
+            $("#wash-5").text("");
+            $("#guideMessage").text("세탁시간이 아닙니다.");
+        }
     </script>
 </body>
 

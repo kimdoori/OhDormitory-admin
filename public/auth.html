@@ -1,203 +1,121 @@
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="">
-  <meta name="author" content="">
-
-
-  <script src="https://www.gstatic.com/firebasejs/4.4.0/firebase.js"></script>
-  <script>
-    // Initialize Firebase
-    var config = {
-      apiKey: "AIzaSyCR17c6uLZyAi4OZ89HX_tX3UncpFhzVC8",
-      authDomain: "ohdormitory-mirim.firebaseapp.com",
-      databaseURL: "https://ohdormitory-mirim.firebaseio.com",
-      projectId: "ohdormitory-mirim",
-      storageBucket: "ohdormitory-mirim.appspot.com",
-      messagingSenderId: "16311010061"
-    };
-    firebase.initializeApp(config);
-  </script>
-
-<!-- Bootstrap core CSS-->
-  <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Custom fonts for this template-->
-  <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-  <!-- Page level plugin CSS-->
-  <link href="vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
-  <!-- Custom styles for this template-->
-  <link href="css/sb-admin.css" rel="stylesheet">
-    <title>auth </title>
-    <style>
-    #parents{
-      border: 1px solid #e9ecef;
-      padding-left: 20px;
-      padding-right: 10px;
-      padding-top: 10px;
-      padding-bottom: 10px;
-      margin-top: 10px;
-      margin-bottom: 10px;
+<html>
+    
+    <head>
+      <title>auth </title>
+      <style>
+      #parents{
+        border: 1px solid #e9ecef;
+        padding-left: 20px;
+        padding-right: 10px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+      }
+      #userTitle{
+        padding: 10px;
+        background-color: #e9ecef;
+        border-radius: 5px;
+        margin-bottom: 10px;
+      }
+      .userlist{
+        margin: 30px;
+      }
+      .user {
+        width: 100%;
+        height: auto;
+        padding-top: : 10px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #e9ecef;
+      }
+    
+      .user-value {
+        font-size: 15pt;
+        height: auto;
+        margin: 10px;
+        color: #5e5e5e;
+      }
+    
+      .user-index {
+        color: black;
+        font-weight: bold;
+      }
+    
+      .user-uid {
+        color: #acacac;
+        font-style: italic;
+      }
+      .btnCustom {
+        background-color: #b2b2b2;
+        border: none;
+        color: white;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        cursor: pointer;
+        border-radius: 10px;
+        margin-right: 10px;
     }
-    #userTitle{
-      padding: 10px;
-      background-color: #e9ecef;
-      border-radius: 5px;
-      margin-bottom: 10px;
-    }
-    .userlist{
-      margin: 30px;
-    }
-    .user {
-      width: 100%;
-      height: auto;
-      padding-top: 10px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid #e9ecef;
-    }
-
-    .user-value {
-      font-size: 15pt;
-      height: auto;
-      margin: 10px;
-      color: #5e5e5e;
-    }
-
-    .user-index {
-      color: black;
-      font-weight: bold;
-    }
-
-    .user-uid {
-      color: #acacac;
-      font-style: italic;
-    }
-    .content-wrapper{
-      padding: 20px;
-    }
-    .btnCustom {
-      background-color: #b2b2b2;
-      border: none;
-      color: white;
-      text-align: center;
-      text-decoration: none;
-      display: inline-block;
-      cursor: pointer;
-      border-radius: 10px;
-      margin-right: 10px;
-  }
-    </style>
-    <script src="https://www.gstatic.com/firebasejs/4.4.0/firebase.js"></script>
-    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-    <script type="text/javascript">
-    var roomNumbers = [
-      "401", "402", "403", "404", "405", "406", "407", "408", "409", "410", "411", "412", "413", "414", "415", "416", "417", "418", "501", "502", "503", "504", "505", "506", "507", "508", "509", "510", "511", "512", "513", "514", "515", "516", "517", "518", "519"
-    ];
-    // Initialize Firebase
-    var config = {
-      apiKey: "AIzaSyCR17c6uLZyAi4OZ89HX_tX3UncpFhzVC8",
-      authDomain: "ohdormitory-mirim.firebaseapp.com",
-      databaseURL: "https://ohdormitory-mirim.firebaseio.com",
-      projectId: "ohdormitory-mirim",
-      storageBucket: "ohdormitory-mirim.appspot.com",
-      messagingSenderId: "16311010061"
-    };
-    firebase.initializeApp(config);
-    //Get a reference to the database service
-    var database = firebase.database();
-    var userListRef;
-
-    function allow(index) {
-      // alert($("#account").html()+$("#roomNumber").html());
-      var key = $("#account-" + index).html();
-      var name = $("#name-" + index).html();
-      var roomNumber = $("#roomNumber-" + index).html();
-      var uid = $("#uid-" + index).html();
-      var userData = {
-        "allowCode": 1,
-        "name": name,
-        "roomNumber": roomNumbers.indexOf(roomNumber),
-        "uid": uid
+      </style>
+      <script src="https://www.gstatic.com/firebasejs/4.4.0/firebase.js"></script>
+      <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+      <script type="text/javascript">
+      var roomNumbers = [
+        "401", "402", "403", "404", "405", "406", "407", "408", "409", "410", "411", "412", "413", "414", "415", "416", "417", "418", "501", "502", "503", "504", "505", "506", "507", "508", "509", "510", "511", "512", "513", "514", "515", "516", "517", "518", "519"
+      ];
+      // Initialize Firebase
+      var config = {
+        apiKey: "AIzaSyCR17c6uLZyAi4OZ89HX_tX3UncpFhzVC8",
+        authDomain: "ohdormitory-mirim.firebaseapp.com",
+        databaseURL: "https://ohdormitory-mirim.firebaseio.com",
+        projectId: "ohdormitory-mirim",
+        storageBucket: "ohdormitory-mirim.appspot.com",
+        messagingSenderId: "16311010061"
       };
-      var updates = {};
-      updates['/user/' + key] = userData;
-      return firebase.database().ref().update(updates);
-    }
-
-    function reject(index) {
-      var index = -1 * parseInt(index);
-      var key = $("#account-" + index).html();
-      var name = $("#name-" + index).html();
-      var roomNumber = $("#roomNumber-" + index).html();
-      var uid = $("#uid-" + index).html();
-      var userData = {
-        "allowCode": -2,
-        "name": name,
-        "roomNumber": roomNumbers.indexOf(roomNumber),
-        "uid": uid
-      };
-      var updates = {};
-      updates['/user/' + key] = userData;
-      return firebase.database().ref().update(updates);
-    }
-
-    </script>
-</head>
-
-<body class="fixed-nav sticky-footer bg-dark" id="page-top">
-  <!-- Navigation-->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
-    <a class="navbar-brand" href="administer.html">오몇점?</a>
-    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="true" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="navbar-collapse collapse show" id="navbarResponsive" style="">
-      <ul class="navbar-nav navbar-sidenav" id="exampleAccordion">
-        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="" data-original-title="Dashboard">
-          <a class="nav-link" href="administer.html">
-            <span class="nav-link-text">회원관리</span>
-          </a>
-        </li>
-        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="" data-original-title="Charts">
-          <a class="nav-link" href="charts.html">
-            <span class="nav-link-text">공지사항</span>
-          </a>
-        </li>
-        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="" data-original-title="Tables">
-          <a class="nav-link" href="tables.html">
-            <span class="nav-link-text">세탁일지</span>
-          </a>
-        </li>
-        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="" data-original-title="Tables">
-          <a class="nav-link" href="tables.html">
-            <span class="nav-link-text">외박증</span>
-          </a>
-        </li>
-        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="" data-original-title="Tables">
-          <a class="nav-link" href="tables.html">
-            <span class="nav-link-text">상벌점</span>
-          </a>
-        </li>
-      </ul>
-      <ul class="navbar-nav sidenav-toggler">
-        <li class="nav-item">
-          <a class="nav-link text-center" id="sidenavToggler">
-            <i class="fa fa-fw fa-angle-left"></i>
-          </a>
-        </li>
-      </ul>
-      <ul class="navbar-nav ml-auto">
-        <li class="nav-item">
-          <a class="nav-link" data-toggle="modal" data-target="#exampleModal">
-            <i class="fa fa-fw fa-sign-out"></i>Logout</a>
-        </li>
-      </ul>
-    </div>
-  </nav>
-  <div class="content-wrapper">
+      firebase.initializeApp(config);
+      //Get a reference to the database service
+      var database = firebase.database();
+      var userListRef;
+    
+      function allow(index) {
+        // alert($("#account").html()+$("#roomNumber").html());
+        var key = $("#account-" + index).html();
+        var name = $("#name-" + index).html();
+        var roomNumber = $("#roomNumber-" + index).html();
+        var uid = $("#uid-" + index).html();
+        var userData = {
+          "allowCode": 1,
+          "name": name,
+          "roomNumber": roomNumbers.indexOf(roomNumber),
+          "uid": uid
+        };
+        var updates = {};
+        updates['/user/' + key] = userData;
+        return firebase.database().ref().update(updates);
+      }
+    
+      function reject(index) {
+        var index = -1 * parseInt(index);
+        var key = $("#account-" + index).html();
+        var name = $("#name-" + index).html();
+        var roomNumber = $("#roomNumber-" + index).html();
+        var uid = $("#uid-" + index).html();
+        var userData = {
+          "allowCode": -2,
+          "name": name,
+          "roomNumber": roomNumbers.indexOf(roomNumber),
+          "uid": uid
+        };
+        var updates = {};
+        updates['/user/' + key] = userData;
+        return firebase.database().ref().update(updates);
+      }
+    
+      </script>
+    </head>
+    
+    <body>
       <div id="userTitle">
         회원등록
       </div>
@@ -208,12 +126,12 @@
       <div id="userTitle">
         회원삭제
       </div>
-
+    
       <script type="text/javascript">
       // allow button = (plus) index
       // reject button = (minus) index
-
-
+    
+    
       function getUserList() {
         // 기존 목록을 가져온 적이 있을 때는 연결 해제
         if (userListRef != null) {
@@ -227,19 +145,18 @@
             var allowCode = userSnapshot.val().allowCode;
             if (allowCode == 0) {
               index++;
-              // alert(index);
               var key = userSnapshot.key;
               var name = userSnapshot.val().name;
               var roomNumber = userSnapshot.val().roomNumber;
               var uid = userSnapshot.val().uid;
-              var post = "<div class='user'><span id='index-" + index + "' class='user-value user-index'>" + index + "</span>" +
-                "<span id='account-" + index + "' class='user-value'>" + key + "</span>" +
-                "<span id='name-" + index + "' class='user-value'>" + name + "</span>" +
-                "<span id='roomNumber-" + index + "' class='user-value'>" + roomNumbers[roomNumber] + "</span>" +
-                "<span id='uid-" + index + "' class='user-value user-uid'>" + uid + "</span>" +
-                "<input type='button' class='btnCustom' value='수락하기' id='" + index + "' onclick='allow(this.id)'>" +
-                "<input type='button' class='btnCustom' value='거절하기' id='-" + index + "' onclick='reject(this.id)'>" +
-                "</div>";
+          var post = "<div class='user'><span id='index-" + index + "' class='user-value user-index'  style='font-size:1em;'>" + index + "</span>" +
+            "<span id='account-" + index + "' class='user-value' style='font-size:1em;'>" + key + "</span>" +
+            "<span id='roomNumber-" + index + "' class='user-value' style='font-size:1em;'>" + roomNumbers[roomNumber] + "호</span>" +
+            "<span id='name-" + index + "' class='user-value' style='font-size:1em;margin-right:20px;'>" + name + "</span>" +
+            "<input type='button' class='btnCustom' value='수락하기' id='" + index + "' onclick='allow(this.id)'>" +
+            "<input type='button' class='btnCustom' value='거절하기' id='-" + index + "' onclick='reject(this.id)'>" +
+            "<span id='uid-" + index + "' class='user-value user-uid' style='color:white;'>" + uid + "</span>" +
+            "</div>";
               document.getElementById('userlist').innerHTML += post;
             }
           });
@@ -249,62 +166,9 @@
         });
       }
       getUserList();
-
+    
       </script>
-
-  <!-- /.content-wrapper-->
-  <footer class="sticky-footer">
-    <div class="container">
-      <div class="text-center">
-        <small>Copyright © OhDormitory</small>
-      </div>
-    </div>
-  </footer>
-  <!-- Scroll to Top Button-->
-  <a class="scroll-to-top rounded" href="#page-top" style="display: inline;">
-    <i class="fa fa-angle-up"></i>
-  </a>
-  <!-- Logout Modal-->
-  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">×</span>
-          </button>
-        </div>
-        <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-        <div class="modal-footer">
-          <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-          <a class="btn btn-primary" href="login.html">Logout</a>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-    <div class="container-fluid">
-      <!-- Breadcrumbs-->
-      <!-- Icon Cards-->
-      <!-- Area Chart Example-->
-
-    <!-- Bootstrap core JavaScript-->
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/popper/popper.min.js"></script>
-    <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
-    <!-- Core plugin JavaScript-->
-    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
-    <!-- Page level plugin JavaScript-->
-    <script src="vendor/chart.js/Chart.min.js"></script>
-    <script src="vendor/datatables/jquery.dataTables.js"></script>
-    <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
-    <!-- Custom scripts for all pages-->
-    <script src="js/sb-admin.min.js"></script>
-    <!-- Custom scripts for this page-->
-    <script src="js/sb-admin-datatables.min.js"></script>
-    <script src="js/sb-admin-charts.min.js"></script>
-  </div>
-</body>
-
-</html>
+    </body>
+    
+    </html>
+    

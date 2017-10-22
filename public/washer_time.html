@@ -18,10 +18,10 @@
         }
     </style>
     <!-- jquery -->
-    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css">
-    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
-    <script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
+    <script src="https://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
     <!--  firebase -->
     <script src="https://www.gstatic.com/firebasejs/4.5.0/firebase.js"></script>
     <script>
@@ -231,7 +231,10 @@
             $("#third-time-5").html("22:00~23:30");
 
         }
-
+        //TEST
+        timeType = 2;
+        isPossibleTime = true;
+        //end of TEST
 
         var floor4Ref;
 
@@ -255,7 +258,7 @@
             washingRef.on('value', function (snapshot) {
                 snapshot.forEach(function (washingSnapshot) {
                     var floorKey = washingSnapshot.key;//floor_5
-                    alert(floorKey);
+                    // alert(floorKey);
                     floorRef = database.ref("wash-time/" + today + "/" + floorKey);//테스트용 : "wash-time/2017-10-19/" + floorKey
                     floorRef.on('value', function (floorSnapshot) {
                         floorSnapshot.forEach(function (typeSnapshot) {//timeType
@@ -266,13 +269,13 @@
                                 typeRef.on('value', function (washerSnapshot) {
                                     washerSnapshot.forEach(function (washSnapshot) {//washer type
                                         var washerKey = washSnapshot.key;//washer_0
-                                        alert(washerKey);
+                                        // alert(washerKey);
 
                                         washerRef = database.ref("wash-time/" + today + "/" + floorKey + "/" + typeKey + "/" + washerKey);//테스트용 : wash-time/2017-10-19/" + floorKey+"/"+typeKey+"/"+washerKey
                                         washerRef.on('value', function (timeTypeSnapshot) {
                                             timeTypeSnapshot.forEach(function (timeSnapshot) {
                                                 var timeKey = timeSnapshot.key;//1
-                                                alert(timeKey);
+                                                // alert(timeKey);
 
                                                 var washerUserData = timeSnapshot.val();
                                                 var user = washerUserData.name;
@@ -283,7 +286,7 @@
                                                 var waherNum = washerKey.replace("washer_", "");
                                                 $("#" + floor + "-" + waherNum + "-" + timeKey).html(user); //    층 - 세탁기 번호 - 시간
 
-                                                alert(user);
+                                                // alert(user);
 
 
 

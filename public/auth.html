@@ -84,10 +84,13 @@
         var name = $("#name-" + index).html();
         var roomNumber = $("#roomNumber-" + index).html();
         var uid = $("#uid-" + index).html();
+        // alert(roomNumber);
+        // alert(roomNumbers.indexOf(roomNumber.toString()));
+        // return false;
         var userData = {
           "allowCode": 1,
           "name": name,
-          "roomNumber": roomNumbers.indexOf(roomNumber),
+          "roomNumber": roomNumbers.indexOf(roomNumber.toString()),
           "uid": uid
         };
         var updates = {};
@@ -151,7 +154,7 @@
               var uid = userSnapshot.val().uid;
           var post = "<div class='user'><span id='index-" + index + "' class='user-value user-index'  style='font-size:1em;'>" + index + "</span>" +
             "<span id='account-" + index + "' class='user-value' style='font-size:1em;'>" + key + "</span>" +
-            "<span id='roomNumber-" + index + "' class='user-value' style='font-size:1em;'>" + roomNumbers[roomNumber] + "호</span>" +
+            "<span id='roomNumber-" + index + "' class='user-value' style='font-size:1em;'>" + roomNumbers[roomNumber] + "</span><span>호</span>" +
             "<span id='name-" + index + "' class='user-value' style='font-size:1em;margin-right:20px;'>" + name + "</span>" +
             "<input type='button' class='btnCustom' value='수락하기' id='" + index + "' onclick='allow(this.id)'>" +
             "<input type='button' class='btnCustom' value='거절하기' id='-" + index + "' onclick='reject(this.id)'>" +

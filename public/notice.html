@@ -340,10 +340,34 @@
           if (notice.notice_kind == "청소구역") {
             isExistCleanNotice = true;
           }
-          if (notice.w_time == "0" && notice.d_time == "0")
-            var date = "항시공지";
-          else
-            var date = notice.w_time + ' - ' + notice.d_time;
+
+          var date;
+          var obDate;
+          var nowDate;
+
+          if (notice.w_time == "0" && notice.d_time == "0"){
+            date = "항시공지";
+            nowDate = new Date();
+            obDate = new Date();
+          }
+          else{
+            date = notice.w_time + ' - ' + notice.d_time;
+            // notice.d_time
+            var splitDate = notice.d_time.split('.');
+            // alert(splitDate[0]+","+splitDate[1]);
+
+            obDate = new Date(splitDate[0], splitDate[1], splitDate[2], 0, 0, 0, 0);
+            nowDate = new Date();
+
+            nowDate = new Date(nowDate.getFullYear(), nowDate.getMonth()+1, nowDate.getDate(), 0, 0, 0, 0);
+          }
+
+            
+          if(obDate.getTime() < nowDate.getTime()){
+              // deleteNotice();
+              removeNotice(notice_key);
+            }else{
+
             var post = '<div class="noticeCard">' +
                 '<div style="width:7px;height:100px;background-color:#96b5c3;float:left;margin-right:25px;"></div>'+
                 '<div style="font-size:0.9em;">'+date +'</div>'+
@@ -353,6 +377,8 @@
                   '\')">삭제하기</a><br><br>' +
                    '</div>';
                 document.getElementById('noticeList').innerHTML += post;
+            }
+                
         });
       });
     }
